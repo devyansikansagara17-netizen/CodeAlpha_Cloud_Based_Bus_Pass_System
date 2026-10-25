@@ -1,0 +1,164 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CloudBus | Bus Pass Booking</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">🚌 CloudBus</a>
+  <nav>
+    <a href="#features">Features</a>
+    <a href="/admin/bookings">Demo bookings</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <p class="eyebrow">SMART • SIMPLE • ONLINE</p>
+      <h1>Your daily journey,<br><span>made easier.</span></h1>
+      <p class="intro">
+        Apply for a bus pass online. Choose your route, select a pass
+        duration and keep your booking reference safe.
+      </p>
+      <div class="stats">
+        <div><strong>24/7</strong><small>Online access</small></div>
+        <div><strong>3</strong><small>Pass options</small></div>
+        <div><strong>1 ID</strong><small>Per booking</small></div>
+      </div>
+    </div>
+
+    <div class="bus-art" aria-hidden="true">
+      <div class="sun"></div>
+      <div class="road"></div>
+      <div class="bus">
+        <div class="windshield"></div>
+        <div class="bus-window"></div>
+        <div class="wheel w1"></div>
+        <div class="wheel w2"></div>
+        <span>CloudBus</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="booking-section" id="book">
+    <div class="section-heading">
+      <p class="eyebrow">GET STARTED</p>
+      <h2>Book your bus pass</h2>
+      <p>Enter your details below to create a booking.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="notice {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="/book" method="post" class="booking-form">
+      <label>
+        Full name
+        <input name="full_name" required maxlength="100" placeholder="e.g. Dev Patel">
+      </label>
+
+      <label>
+        Email address
+        <input type="email" name="email" required maxlength="150" placeholder="you@example.com">
+      </label>
+
+      <label>
+        Phone number
+        <input type="tel" name="phone" required pattern="[0-9+() -]{8,20}" placeholder="+91 98765 43210">
+      </label>
+
+      <label>
+        Route
+        <select name="route" id="route" required>
+          <option value="">Choose route</option>
+          {% for route, fare in routes.items() %}
+            <option value="{{ route }}" data-fare="{{ fare }}">
+              {{ route }} — ₹{{ fare }} base fare
+            </option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <label>
+        Pass duration
+        <select name="pass_type" id="pass_type" required>
+          <option value="">Choose duration</option>
+          <option value="One Day" data-multiplier="1">One Day</option>
+          <option value="Weekly" data-multiplier="5">Weekly</option>
+          <option value="Monthly" data-multiplier="20">Monthly</option>
+        </select>
+      </label>
+
+      <label>
+        Start date
+        <input type="date" name="travel_date" required>
+      </label>
+
+      <div class="price-box">
+        <span>Estimated pass price</span>
+        <strong id="price">Select route and duration</strong>
+        <small>Demo estimate; no payment is collected.</small>
+      </div>
+
+      <button type="submit" class="submit-btn">
+        Create bus pass booking <span>→</span>
+      </button>
+    </form>
+  </section>
+
+  <section class="features" id="features">
+    <div class="section-heading">
+      <p class="eyebrow">WHY CLOUDBUS</p>
+      <h2>Built for a smoother commute</h2>
+    </div>
+
+    <div class="feature-grid">
+      <article>
+        <div class="feature-icon">🔐</div>
+        <h3>Reliable records</h3>
+        <p>Bookings are saved in a database and assigned a unique reference.</p>
+      </article>
+      <article>
+        <div class="feature-icon">⚡</div>
+        <h3>Simple booking</h3>
+        <p>A clear form helps passengers apply without complicated steps.</p>
+      </article>
+      <article>
+        <div class="feature-icon">☁️</div>
+        <h3>Cloud-ready</h3>
+        <p>Deploy the application online and share its public URL.</p>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer>CloudBus demo project · Built with Python, Flask and SQLite</footer>
+
+<script>
+const route = document.getElementById("route");
+const passType = document.getElementById("pass_type");
+const price = document.getElementById("price");
+
+function updatePrice() {
+  const fare = Number(route.selectedOptions[0]?.dataset.fare || 0);
+  const multiplier = Number(passType.selectedOptions[0]?.dataset.multiplier || 0);
+
+  price.textContent = fare && multiplier
+    ? "₹" + (fare * multiplier).toLocaleString("en-IN")
+    : "Select route and duration";
+}
+
+route.addEventListener("change", updatePrice);
+passType.addEventListener("change", updatePrice);
+</script>
+</body>
+</html>
