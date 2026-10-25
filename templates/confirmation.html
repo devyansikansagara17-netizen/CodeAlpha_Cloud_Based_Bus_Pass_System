@@ -1,0 +1,42 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Booking confirmed | CloudBus</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">🚌 CloudBus</a>
+  <a href="/">New booking</a>
+</header>
+
+<main class="result-wrap">
+  <section class="result-card">
+    <div class="success-mark">✓</div>
+    <p class="eyebrow">BOOKING CREATED</p>
+    <h1>You're all set, {{ booking["full_name"] }}!</h1>
+    <p>Your demo bus pass booking has been saved. Keep this reference for your records.</p>
+
+    <div class="booking-code">
+      <span>Booking reference</span>
+      <strong>{{ booking["booking_code"] }}</strong>
+    </div>
+
+    <div class="detail-list">
+      <div><span>Route</span><strong>{{ booking["route"] }}</strong></div>
+      <div><span>Pass duration</span><strong>{{ booking["pass_type"] }}</strong></div>
+      <div><span>Start date</span><strong>{{ booking["travel_date"] }}</strong></div>
+      <div><span>Estimated price</span><strong>₹{{ "%.2f"|format(booking["price"]) }}</strong></div>
+      <div><span>Email</span><strong>{{ booking["email"] }}</strong></div>
+    </div>
+
+    <a class="submit-btn link-btn" href="/">Return home →</a>
+  </section>
+</main>
+
+<footer>CloudBus demo project · No payment has been taken</footer>
+</body>
+</html>
